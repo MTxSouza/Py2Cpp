@@ -26,7 +26,7 @@ class MNISTDataset:
         # Define data transformations
         train_data_transform = transforms.Compose(transforms=[
             transforms.ToTensor(),
-            transforms.Normalize(mean=(0.0,), std=(1.0,))
+            transforms.Normalize((0.5,), (0.5,))
         ])
         test_data_transform = transforms.Compose(transforms=[
             transforms.ToTensor()

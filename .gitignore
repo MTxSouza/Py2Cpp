@@ -8,4 +8,7 @@ __pycache__
 env
 venv
 
+# Dataset
+data
+
 # Cpp stuffs

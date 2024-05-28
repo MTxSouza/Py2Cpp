@@ -1,0 +1,11 @@
+# Python stuffs
+# - Cache
+__pycache__
+
+# - Environment
+.env
+.venv
+env
+venv
+
+# Cpp stuffs

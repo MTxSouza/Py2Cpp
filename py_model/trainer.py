@@ -139,7 +139,7 @@ class Trainer:
             loss.backward()
             optim.step()
 
-        return y_pred, loss, accuracy, accuracy
+        return y_pred, loss, accuracy
 
 
     @staticmethod

@@ -24,14 +24,17 @@ class MNISTDataset:
         os.makedirs(name=cls.dataset_directory, exist_ok=True)
 
         # Define data transformations
-        data_transform = transforms.Compose(transforms=[
+        train_data_transform = transforms.Compose(transforms=[
             transforms.ToTensor(),
             transforms.Normalize(mean=(0.0,), std=(1.0,))
         ])
+        test_data_transform = transforms.Compose(transforms=[
+            transforms.ToTensor()
+        ])
 
         # Download the dataset
-        train_set = MNIST(root=cls.dataset_directory, train=True, download=True, transform=data_transform)
-        test_set = MNIST(root=cls.dataset_directory, train=False, download=True)
+        train_set = MNIST(root=cls.dataset_directory, train=True, download=True, transform=train_data_transform)
+        test_set = MNIST(root=cls.dataset_directory, train=False, download=True, transform=test_data_transform)
 
         # Get image size
         image_size = train_set.data.shape[-1]

@@ -15,6 +15,9 @@ data
 *.pth
 
 # Cpp stuffs
+# - Build
+build
+
 # - Libraries
 lib
 *.zip

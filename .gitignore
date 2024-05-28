@@ -8,7 +8,10 @@ __pycache__
 env
 venv
 
-# Dataset
+# - Dataset
 data
+
+# - Model
+*.pth
 
 # Cpp stuffs

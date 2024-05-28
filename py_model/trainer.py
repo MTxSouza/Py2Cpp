@@ -20,7 +20,7 @@ class EarlyStopping:
             delta (int): Difference between the best score and the current score.
         """
         self.patience = patience
-        self.margin = delta
+        self.delta = delta
         self.counter = 0
         self.best_score = None
         self.early_stop = False

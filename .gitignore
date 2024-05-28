@@ -15,3 +15,6 @@ data
 *.pth
 
 # Cpp stuffs
+# - Libraries
+lib
+*.zip

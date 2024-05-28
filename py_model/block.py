@@ -17,8 +17,7 @@ class ConvBlock(nn.Module):
         """
         super().__init__()
         self.layer = nn.Sequential(
-            nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(num_features=out_channels),
+            nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=5, stride=1, padding="same"),
             nn.ReLU(inplace=False),
             nn.Dropout(p=dropout),
             nn.MaxPool2d(kernel_size=2, stride=2)

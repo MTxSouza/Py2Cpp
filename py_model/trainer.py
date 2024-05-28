@@ -4,7 +4,6 @@ Main module to define the Trainer class and all useful functions to train the mo
 from warnings import WarningMessage
 
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from tqdm import tqdm
@@ -62,12 +61,8 @@ class Trainer:
         Args:
             module (nn.Module): Module to initialize the weights.
         """
-        if isinstance(module, (nn.Linear, nn.Conv2d)):
-            torch.nn.init.xavier_uniform_(module.weight)
-            module.bias.data.fill_(0.00)
-        elif isinstance(module, nn.BatchNorm2d):
-            module.weight.data.fill_(1.00)
-            module.bias.data.fill_(0.00)
+        torch.nn.init.xavier_uniform_(module.weight)
+        module.bias.data.fill_(0.00)
 
 
     @staticmethod

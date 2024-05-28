@@ -84,7 +84,7 @@ class Classifier(nn.Module):
         self.conv3 = ConvBlock(in_channels=feature_scale * 2, out_channels=feature_scale * 4)
 
         # Define the fully connected block
-        img_featutes = (img_size // 4 ** 2) * feature_scale * 4
+        img_featutes = (img_size // 8) ** 2 * feature_scale * 4
         self.fc = FCBlock(in_features=img_featutes, out_features=n_classes)
 
     def forward(self, x):

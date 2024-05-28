@@ -4,6 +4,7 @@ Main module to define the Trainer class and all useful functions to train the mo
 from warnings import WarningMessage
 
 import torch
+import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from tqdm import tqdm
@@ -42,6 +43,8 @@ class EarlyStopping:
             self.counter = 0
         elif abs(train_loss - valid_loss) > self.delta:
             self.counter += 1
+        elif abs(train_loss - valid_loss) <= self.delta and self.counter:
+            self.counter -= 1
 
         if self.counter >= self.patience:
             self.early_stop = True
@@ -50,6 +53,22 @@ class EarlyStopping:
 
 
 class Trainer:
+
+    @staticmethod
+    def init_weights(module):
+        """
+        Function to initialize the weights of the model.
+
+        Args:
+            module (nn.Module): Module to initialize the weights.
+        """
+        if isinstance(module, (nn.Linear, nn.Conv2d)):
+            torch.nn.init.xavier_uniform_(module.weight)
+            module.bias.data.fill_(0.00)
+        elif isinstance(module, nn.BatchNorm2d):
+            module.weight.data.fill_(1.00)
+            module.bias.data.fill_(0.00)
+
 
     @staticmethod
     def compute_forward(model, x, no_grad = False):
@@ -189,24 +208,28 @@ class Trainer:
         self.best_score = None
 
 
-    def compile(self, total_epochs, lr = 1e-5, patience = 10, delta = 5):
+    def compile(self, total_epochs, lr, weight_decay, patience, delta):
         """
         Function to compile the model.
 
         Args:
             total_epochs (int): Total number of epochs to train the model.
-            lr (float): Learning rate for the optimizer. (Default: 1e-5)
-            patience (int): Number of epochs to wait before early stopping. (Default: 10)
-            delta (int): Difference between the best score and the current score. (Default: 5)
+            lr (float): Learning rate for the optimizer.
+            weight_decay (float): Weight decay for the optimizer.
+            patience (int): Number of epochs to wait before early stopping.
+            delta (int): Difference between the best score and the current score.
         """
         # Define total number of epochs
         self.total_epochs = total_epochs
 
         # Initialize the optimizer
-        self.optim = optim.Adam(params=self.model.parameters(), lr=lr)
+        self.optim = optim.Adam(params=self.model.parameters(), lr=lr, weight_decay=weight_decay)
 
         # Initialize the early stopping
         self.early_stopping = EarlyStopping(patience=patience, delta=delta)
+
+        # Initilize weights
+        self.model.apply(self.init_weights)
 
         # Set the model to the device
         self.device = self.get_device()
@@ -228,7 +251,7 @@ class Trainer:
         for epoch in range(1, self.total_epochs + 1):
 
             # Display epoch
-            print(f"Epoch: [{epoch}/{self.total_epochs}]")
+            print(f"Epoch: [{epoch}/{self.total_epochs}] - Early Stopping: {self.early_stopping.counter}")
 
             # Training loop
             train_loss = 0

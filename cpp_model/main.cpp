@@ -1,24 +1,47 @@
-#include <torch/torch.h>
+/*
+Main file used to load the model and run the inference.
+*/
+#include <filesystem>
 #include <iostream>
 
+#include <torch/torch.h>
 
-class ConvBlock : public torch::nn::Module {
-    public:
-    ConvBlock(int64_t in_channels, int64_t out_channels, int64_t kernel_size) {
-        conv = register_module("conv", torch::nn::Conv2d(in_channels, out_channels, kernel_size));
-        bn = register_module("bn", torch::nn::BatchNorm2d(out_channels));
+#include "include/block.h"
+#include "include/data.h"
+
+
+int main(int argc, const char* argv[]) {
+
+    // Check the number of arguments.
+    std::clog << "Checking the number of arguments..." << std::endl;
+    if (argc != 2) {
+        std::cerr << "Usage: ./main <path-to-weights-file>" << std::endl;
+        return -1;
     }
 
-    torch::Tensor forward(torch::Tensor x) {
-        return torch::relu(bn(conv(x)));
+    // Get the path to the weights file.
+    const char* weightPath = argv[1];
+
+    // Check if the file exists.
+    if (!checkFile(weightPath)) {
+        std::cerr << "Error: File not found." << std::endl;
+        return -1;
     }
 
-    torch::nn::Conv2d conv;
-    torch::nn::BatchNorm2d bn;
+    // Check device.
+    torch::Device device = getDevice();
+
+    // Load the model.
+    Classifier model = Classifier(28, 1, 16, 10, 0.5f); // Default hyperparameters.
+    model->to(device);
+
+    // Display the model architecture.
+    std::cout << "Summary:" << std::endl;
+    std::cout << "---------------------------------------------------------------------------------------" << std::endl;
+    std::cout << model << std::endl; // Model architecture.
+    std::cout << "---------------------------------------------------------------------------------------" << std::endl;
+
+    // Load weights.
+    std::clog << "Loading weights..." << std::endl;
+    loadWeights(model, weightPath);
 };
-
-
-int main() {
-  torch::Tensor tensor = torch::rand({2, 3});
-  std::cout << tensor << std::endl;
-}

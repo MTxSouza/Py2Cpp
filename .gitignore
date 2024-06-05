@@ -13,6 +13,7 @@ data
 
 # - Model
 *.pth
+*.pt
 
 # Cpp stuffs
 # - Build

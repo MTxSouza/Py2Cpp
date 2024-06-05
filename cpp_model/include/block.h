@@ -11,6 +11,7 @@ class ConvBlockImpl : public nn::Module {
 
     public: // Definitions.
 
+        nn::Sequential layer{nullptr};
         nn::Conv2d conv{nullptr};
         nn::ReLU relu{nullptr};
         nn::Dropout dp{nullptr};
@@ -22,19 +23,18 @@ class ConvBlockImpl : public nn::Module {
         ConvBlockImpl(int in_channels, int out_channels, float dropout) {
 
             // Layers.
-            conv = register_module("conv", nn::Conv2d(nn::Conv2dOptions(in_channels, out_channels, 5).padding(2)));
-            relu = register_module("relu", nn::ReLU());
-            dp = register_module("dp", nn::Dropout(nn::DropoutOptions(dropout)));
-            pool = register_module("pool", nn::MaxPool2d(nn::MaxPool2dOptions({2, 2}).stride(2)));
+            layer = register_module("layer", nn::Sequential(
+                nn::Conv2d(nn::Conv2dOptions(in_channels, out_channels, 5).padding(2)),
+                nn::ReLU(),
+                nn::Dropout(nn::DropoutOptions(dropout)),
+                nn::MaxPool2d(nn::MaxPool2dOptions({2, 2}).stride(2))
+            ));
 
         }
 
         // Forward Pass.
         torch::Tensor forward(torch::Tensor x) {
-            x = conv->forward(x);
-            x = relu->forward(x);
-            x = dp->forward(x);
-            x = pool->forward(x);
+            x = layer->forward(x);
             return x;
         }
 };

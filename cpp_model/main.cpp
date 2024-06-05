@@ -36,12 +36,17 @@ int main(int argc, const char* argv[]) {
     model->to(device);
 
     // Display the model architecture.
-    std::cout << "Summary:" << std::endl;
-    std::cout << "---------------------------------------------------------------------------------------" << std::endl;
-    std::cout << model << std::endl; // Model architecture.
-    std::cout << "---------------------------------------------------------------------------------------" << std::endl;
+    std::clog << "Summary:" << std::endl;
+    std::clog << "---------------------------------------------------------------------------------------" << std::endl;
+    std::clog << model << std::endl; // Model architecture.
+    std::clog << "---------------------------------------------------------------------------------------" << std::endl;
 
     // Load weights.
     std::clog << "Loading weights..." << std::endl;
-    loadWeights(model, weightPath);
+    try {
+        loadWeights(model, weightPath);
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return -1;
+    };
 };

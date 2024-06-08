@@ -49,4 +49,5 @@ int main(int argc, const char* argv[]) {
         std::cerr << "Error: " << e.what() << std::endl;
         return -1;
     };
+    std::clog << "Weights loaded successfully." << std::endl;
 };
